@@ -1,0 +1,8 @@
+{"inst_hex_file": "src/core/rom.hex",
+ "data_hex_file": "src/core/ram.hex",
+ "simulation_cycle": 80,
+ "config": 
+ {
+    "reserved": null
+ }
+}
