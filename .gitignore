@@ -1,6 +1,0 @@
-*.zip
-.gitignore
-
-##文件夹
-/node_modules
-/.vscode
