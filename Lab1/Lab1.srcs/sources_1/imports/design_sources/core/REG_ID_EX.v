@@ -48,26 +48,24 @@ module    REG_ID_EX(input clk,
         PCurrent_EX  <= 32'h00000000 ;
         rs1_EX       <= 0;
         rs2_EX       <= 0;
+        A_EX        <= 0;
+        B_EX        <= 0;
+        Imm32_EX    <= 0;
         MIO_EX       <= 0;
     end
     else if(EN)begin
             if(flush)begin                          
                 PCurrent_EX <= PCurrent_ID;
-                IR_EX       <= 32'h00000013;
-                rs1_EX      <= 0;
-                rs2_EX      <= 0;
-                A_EX        <= 0;
-                B_EX        <= 0;
-                ALUSrc_A_EX <= 0;
-                ALUSrc_B_EX <= 0;
-                ALUC_EX     <= 0;
-                DatatoReg_EX<= 0;
-                Imm32_EX    <= 0;
-                rd_EX       <= 0;
-                MIO_EX      <= 0;
-                RegWrite_EX <= 0;
-                WR_EX       <= 0;
-                u_b_h_w_EX  <= 0;
+                rd_EX        <= 0;
+                RegWrite_EX  <= 0;
+                WR_EX        <= 0;
+                IR_EX        <= 32'h00000000;
+                // rs1_EX       <= 0;
+                // rs2_EX       <= 0;
+                // ALUSrc_A_EX <= 0;
+                // ALUSrc_B_EX <= 0;  
+                MIO_EX       <= 0;
+ 
                 // TO_BE_FILLED，Flush时应该进行什么操作，哪些reg的值需要被重置
             end
             else begin                             

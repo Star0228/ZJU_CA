@@ -10,7 +10,7 @@ module  RV32core(
         input rst,  // synchronous reset
         input interrupter  // interrupt source, for future use
     );
-    reg TO_BE_FILLED = 0; //�?有这个寄存器占的位置都需要填入正确的�?
+    reg TO_BE_FILLED = 0; //所有这个寄存器占的位置都需要填入正确的值
                           //可能是wire或reg的名称，可能是一个算式，也可能是某个常数
                           
     
@@ -58,7 +58,7 @@ module  RV32core(
     
     add_32 add_IF(.a(PC_IF),.b(32'd4),.c(PC_4_IF));
 
-    MUX2T1_32 mux_IF(.I0(PC_4_IF),.I1(jump_PC_ID),.s(Branch_ctrl),.o(next_PC_IF));
+    MUX2T1_32 mux_IF(.I0(PC_4_IF),.I1(jump_PC_ID),.s(Branch_ctrl),.o(next_PC_IF));//TO_BE_FILLED
 
     ROM_D inst_rom(.a(PC_IF[8:2]),.spo(inst_IF));
 
@@ -83,10 +83,10 @@ module  RV32core(
     ImmGen imm_gen(.ImmSel(ImmSel_ctrl),.inst_field(inst_ID),.Imm_out(Imm_out_ID));
     
     MUX4T1_32 mux_forward_A(.I0(rs1_data_reg),.I1(ALUout_EXE),.I2(ALUout_MEM),.I3(Datain_MEM),
-        .s(forward_ctrl_A),.o(rs1_data_ID));
+        .s(forward_ctrl_A),.o(rs1_data_ID));//TO_BE_FILLED
     
     MUX4T1_32 mux_forward_B(.I0(rs2_data_reg),.I1(ALUout_EXE),.I2(ALUout_MEM),.I3(Datain_MEM),
-        .s(forward_ctrl_B),.o(rs2_data_ID));//参�?�forward_ctrl_A和forward_ctrl_B的定义来填写
+        .s(forward_ctrl_B),.o(rs2_data_ID));//参考forward_ctrl_A和forward_ctrl_B的定义来填写
     
     MUX2T1_32 mux_branch_ID(.I0(PC_ID),.I1(rs1_data_ID),.s(JALR),.o(addA_ID));
 
@@ -124,7 +124,7 @@ module  RV32core(
     ALU alu(.A(ALUA_EXE),.B(ALUB_EXE),.Control(ALUControl_EXE),
         .res(ALUout_EXE),.zero(ALUzero_EXE),.overflow(ALUoverflow_EXE));
     
-   MUX2T1_32 mux_forward_EXE(.I0(rs2_data_EXE),.I1(Datain_MEM),.s(forward_ctrl_ls),.o(Dataout_EXE));
+   MUX2T1_32 mux_forward_EXE(.I0(rs2_data_EXE),.I1(Datain_MEM),.s(forward_ctrl_ls),.o(Dataout_EXE));//TO_BE_FILLED
 
 
     // MEM
@@ -155,41 +155,6 @@ module  RV32core(
     wire [31:0] Test_signal;
     assign debug_data = debug_addr[5] ? Test_signal : Debug_regs;
     
-     CPUTEST    U1_3(.PC_IF(PC_IF),
-                     .PC_ID(PC_ID),
-                     .PC_EXE(PC_EXE),
-                     .PC_MEM(PC_MEM),
-                     .PC_WB(PC_WB),
-                     .PC_next_IF(next_PC_IF),
-                     .PCJump(jump_PC_ID),
-                     .inst_IF(inst_IF),
-                     .inst_ID(inst_ID),
-                     .inst_EXE(inst_EXE),
-                     .inst_MEM(inst_MEM),
-                     .inst_WB(inst_WB),
-                     .PCEN(PC_EN_IF),
-                     .Branch(Branch_ctrl),
-                     .PCSource(Branch_ctrl),
-                     .RS1DATA(rs1_data_reg),
-                     .RS2DATA(rs2_data_reg),
-                     .Imm32(Imm_out_ID),
-                     .ImmSel(ImmSel_ctrl),
-                     .ALUC(ALUControl_ctrl),
-                     .ALUSrc_A(ALUSrc_A_ctrl),
-                     .ALUSrc_B(ALUSrc_B_ctrl),
-                     .A(ALUA_EXE),
-                     .B(ALUB_EXE),
-                     .ALU_out(ALUout_MEM),
-                     .Datai(Datain_MEM),
-                     .Datao(Dataout_MEM),
-                     .WDATA(wt_data_WB),
-                     .DatatoReg(DatatoReg_WB),
-                     .RegWrite(RegWrite_WB),
-                     .data_hazard(reg_FD_stall),
-                     .control_hazard(Branch_ctrl),
-
-                     .Debug_addr(debug_addr[4:0]),
-                     .Test_signal(Test_signal)    
-                     );
+    
 
 endmodule

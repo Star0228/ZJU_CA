@@ -20,7 +20,7 @@ module HazardDetectionUnit(
     reg [1:0] hazard_optype_EX, hazard_optype_MEM;
     always @(posedge clk) begin
         hazard_optype_MEM = hazard_optype_EX;
-        hazard_optype_EX = hazard_optype_ID;//前有坑，所以接下来Flush很有用
+        hazard_optype_EX = hazard_optype_ID & {2{~reg_DE_flush}};//TO_BE_FILLED;//前有坑，所以接下来Flush很有用
     end
 
     wire A_EX_Forward,B_EX_Forward;
@@ -32,28 +32,31 @@ module HazardDetectionUnit(
     assign B_EX_Forward = rs2use_ID & 
                         (rs2_ID == rd_EXE) & 
                         (|rs2_ID) &
-                        (hazard_optype_EX == HAZARD_EX);   
+                        (hazard_optype_EX == HAZARD_EX);//TO_BE_FILLED;   
 
-    //这里应该要同时考虑load指令和add类指令在MEM阶段的指令前递
     assign A_MEM_Forward = rs1use_ID & 
                         (rs1_ID == rd_MEM) & 
                         (|rs1_ID) &
-                        (hazard_optype_MEM == HAZARD_MEM | hazard_optype_MEM == HAZARD_EX) &
-                        !A_EX_Forward;        
+                        (~A_EX_Forward ) &
+                        ((hazard_optype_MEM == HAZARD_MEM)|(hazard_optype_MEM == HAZARD_EX));//TO_BE_FILLED;        
     assign B_MEM_Forward = rs2use_ID & 
                         (rs2_ID == rd_MEM) & 
                         (|rs2_ID) &
-                        (hazard_optype_MEM == HAZARD_MEM | hazard_optype_MEM == HAZARD_EX) &
-                        !B_EX_Forward; 
+                        (~B_EX_Forward ) &
+                        ((hazard_optype_MEM == HAZARD_MEM)|(hazard_optype_MEM == HAZARD_EX));//TO_BE_FILLED;//这个空比较长，有五个判断条件同时成立时这个信号才会触发  
 
     assign forward_ctrl_A   = {2{A_EX_Forward}} & 2'b01|
                               {2{A_MEM_Forward&(hazard_optype_MEM==HAZARD_EX)}} & 2'b10 |
                               {2{A_MEM_Forward&(hazard_optype_MEM==HAZARD_MEM)}}& 2'b11 ;
-
+// A_EX_Forward?2'b01:
+//                             A_MEM_Forward& (hazard_optype_MEM==HAZARD_EX)?2'b10:
+//                             A_MEM_Forward& (hazard_optype_MEM==HAZARD_MEM)?2'b11:2'b00;
     assign forward_ctrl_B   = {2{B_EX_Forward}} & 2'b01|
                               {2{B_MEM_Forward&(hazard_optype_MEM==HAZARD_EX)}} & 2'b10 |
                               {2{B_MEM_Forward&(hazard_optype_MEM==HAZARD_MEM)}}& 2'b11 ;
-
+// B_EX_Forward?2'b01:
+//                             B_MEM_Forward& (hazard_optype_MEM==HAZARD_EX)?2'b10:
+//                             B_MEM_Forward& (hazard_optype_MEM==HAZARD_MEM)?2'b11:2'b00;
     wire ST_Forward;
     assign ST_Forward = (hazard_optype_EX==HAZARD_ST) & 
                         (hazard_optype_MEM==HAZARD_MEM)&
@@ -67,15 +70,20 @@ module HazardDetectionUnit(
     assign reg_EM_flush = 1'b0;
     assign reg_MW_EN = 1'b1;
 
-    assign reg_FD_stall = (rs1use_ID & (rs1_ID == rd_EXE) & (|rs1_ID) & (hazard_optype_EX == HAZARD_MEM) )
-                            | (rs2use_ID & (rs2_ID == rd_EXE) & (|rs2_ID) & (hazard_optype_EX == HAZARD_MEM)&(hazard_optype_ID != HAZARD_ST));//什么时候IF到ID阶段需要等待前面的指令执行完成。这个空比较长，有四个判断条件同时成立时这个信号才会触发 
-    //当遇到load指令时
+    assign reg_FD_stall = ((rs1use_ID  && (rs1_ID == rd_EXE))|(rs2use_ID && (rs2_ID == rd_EXE))) 
+                            && rd_EXE
+                            && (hazard_optype_EX == HAZARD_MEM) 
+                            && (hazard_optype_ID != HAZARD_ST);
+                        // (hazard_optype_ID!=HAZARD_ST) & 
+                        // (hazard_optype_EX==HAZARD_MEM)&
+                        // ((rs1_ID == rd_EXE & rs1use_ID) | (rs2_ID == rd_EXE & rs2use_ID))&
+                        // rd_EXE;//TO_BE_FILLED;//loaduse什么时候IF到ID阶段需要等待前面的指令执行完成。这个空比较长，有四个判断条件同时成立时这个信号才会触发  
 
     assign reg_DE_flush = reg_FD_stall;
     assign PC_EN_IF = ~reg_FD_stall;
     
-    assign reg_FD_flush = Branch_ID;//什么时候IF到ID的寄存器需要被清空
-    //在branch指令预测错误的时候？
+    assign reg_FD_flush = Branch_ID;//TO_BE_FILLED;//什么时候IF到ID的寄存器需要被清空
+
 
 
 endmodule
