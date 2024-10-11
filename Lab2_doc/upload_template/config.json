@@ -1,0 +1,9 @@
+{
+  "inst_hex_file": "src/core/rom.hex",
+  "data_hex_file": "src/core/ram.hex",
+  "simulation_cycle": 120,
+  "interrupt_cycle": 94,
+  "config": {
+    "data_mem_size": 128
+  }
+}
