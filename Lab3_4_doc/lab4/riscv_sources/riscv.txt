@@ -1,0 +1,23 @@
+addi x0, x0, 0
+lb x1, 0x01C(x0)
+lh x2, 0x01C(x0)
+lw x3, 0x01C(x0)
+lbu x4, 0x01C(x0)
+lhu x5, 0x01C(x0)
+lw x0, 0x210(x0)
+lui x1 0xABCDE
+sub x1, x4, x2
+addi x1, x1, 0x71C
+sb x1, 0x0(x0)
+sh x1, 0x4(x0)
+sw x1, 0x8(x0)
+lw x6, 0x200(x0)
+lw x7, 0x400(x0)
+lw x8, 0x410(x0)
+ori x16, x0, 0xED
+jal x0, loop
+addi x0, x0, 0
+addi x0, x0, 0
+addi x0, x0, 0
+addi x0, x0, 0
+addi x0, x0, 0

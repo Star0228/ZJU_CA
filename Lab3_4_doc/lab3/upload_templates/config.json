@@ -1,0 +1,119 @@
+{
+  "config": {
+    "word_width": 32,
+    "words_per_cache_line": 4,
+    "num_cache_line": 64,
+    "associativity": 2,
+    "write_back": true,
+    "write_allocate": true
+  },
+  "simulation": [
+    {
+      "type": "replace",
+      "addr": 4,
+      "data_in": 305419896,
+      "width": "w"
+    },
+    {
+      "type": "replace",
+      "addr": 12,
+      "data_in": 591751049,
+      "width": "w"
+    },
+    {
+      "type": "replace",
+      "addr": 16,
+      "data_in": 878086288,
+      "width": "w"
+    },
+    {
+      "type": "replace",
+      "addr": 20,
+      "data_in": 1164413185,
+      "width": "w"
+    },
+    {
+      "type": "load",
+      "addr": 32,
+      "width": "w"
+    },
+    {
+      "type": "load",
+      "addr": 16,
+      "width": "h"
+    },
+    {
+      "type": "store",
+      "addr": 36,
+      "data_in": 1450741778,
+      "width": "h"
+    },
+    {
+      "type": "store",
+      "addr": 17,
+      "data_in": 1737031971,
+      "width": "b"
+    },
+    {
+      "type": "replace",
+      "addr": 512,
+      "data_in": 2022707764,
+      "width": "w"
+    },
+    {
+      "type": "store",
+      "addr": 516,
+      "data_in": 2298553157,
+      "width": "b"
+    },
+    {
+      "type": "no-op",
+      "addr": 1024,
+      "width": "w"
+    },
+    {
+      "type": "load",
+      "addr": 13,
+      "width": "bu"
+    },
+    {
+      "type": "replace",
+      "addr": 96,
+      "data_in": 11111111,
+      "width": "w"
+    },
+    {
+      "type": "replace",
+      "addr": 352,
+      "data_in": 22222222,
+      "width": "w"
+    },
+    {
+      "type": "replace",
+      "addr": 608,
+      "data_in": 33333333,
+      "width": "w"
+    },
+    {
+      "type": "replace",
+      "addr": 864,
+      "data_in": 44444444,
+      "width": "w"
+    },
+    {
+      "type": "load",
+      "addr": 1376,
+      "width": "w"
+    },
+    {
+      "type": "load",
+      "addr": 96,
+      "width": "w"
+    },
+    {
+      "type": "load",
+      "addr": 1376,
+      "width": "w"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "inst_hex_file": "src/rom.hex",
+  "data_hex_file": "src/ram.hex",
+  "simulation_cycle": 140,
+  "config": {
+    "cache": {
+      "word_width": 32,
+      "words_per_cache_line": 4,
+      "num_cache_line": 64,
+      "associativity": 2,
+      "write_back": true,
+      "write_allocate": true
+    },
+    "mem_lag": 3,
+    "data_mem_size": 2048
+  }
+}
