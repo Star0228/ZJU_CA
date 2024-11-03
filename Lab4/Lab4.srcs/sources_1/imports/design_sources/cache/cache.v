@@ -55,8 +55,8 @@ module cache (
     wire [ELEMENT_INDEX_WIDTH+ELEMENT_WORDS_WIDTH-1:0] addr_word2; // element index + word index
 
     assign addr_tag = addr[ADDR_BITS-1:ADDR_BITS-TAG_BITS];
-    assign addr_index = TO_BE_FILLED;
-    assign addr_word = TO_BE_FILLED;
+    assign addr_index = addr[ADDR_BITS-TAG_BITS-1:ADDR_BITS -TAG_BITS - SET_INDEX_WIDTH];//TO_BE_FILLED;
+    assign addr_word = addr[WORD_BYTES_WIDTH + ELEMENT_WORDS_WIDTH - 1:WORD_BYTES_WIDTH];//TO_BE_FILLED;
 
     assign addr_element1 = {addr_index, 1'b0};
     assign addr_element2 = {addr_index, 1'b1};      
@@ -86,9 +86,9 @@ module cache (
     assign hit2 = valid2 & (tag2 == addr_tag) ;     
 
     always @ (*) begin
-        valid <= TO_BE_FILLED; // if both not hit, set to the recent value
-        dirty <= TO_BE_FILLED; // if both not hit, set to the recent value
-        tag <= TO_BE_FILLED; // if both not hit, set to the recent value
+        valid <= hit1 ? valid1: hit2 ? valid2 : recent1 ? valid2 : valid1; //TO_BE_FILLED; // if both not hit, set to the recent value
+        dirty <= hit1 ? dirty1: hit2 ? dirty2 : recent1 ? dirty2 : dirty1;//TO_BE_FILLED; // if both not hit, set to the recent value
+        tag <=   hit1 ? tag1: hit2 ? tag2 : recent1 ? tag2 : tag1;//TO_BE_FILLED; // if both not hit, set to the recent value
         hit <= hit1 | hit2;
         if (load & hit1) begin
             dout <= u_b_h_w[1] ? word1 :
@@ -108,12 +108,12 @@ module cache (
     always @ (posedge clk) begin
         if (load) begin
             if (hit1) begin
-                inner_recent[TO_BE_FILLED] <= TO_BE_FILLED;
-                inner_recent[TO_BE_FILLED] <= TO_BE_FILLED;
+                inner_recent[addr_element1] <= 1'b1; //[TO_BE_FILLED] <= TO_BE_FILLED;
+                inner_recent[addr_element2] <= 1'b0; //[TO_BE_FILLED] <= TO_BE_FILLED;
             end
             else if (hit2) begin
-                inner_recent[TO_BE_FILLED] <= TO_BE_FILLED;
-                inner_recent[TO_BE_FILLED] <= TO_BE_FILLED;  
+                inner_recent[addr_element2] <= 1'b1; //[TO_BE_FILLED] <= TO_BE_FILLED;
+                inner_recent[addr_element1] <= 1'b0; //[TO_BE_FILLED] <= TO_BE_FILLED;
             end
         end
 
@@ -123,36 +123,36 @@ module cache (
                     : u_b_h_w[0] ? addr[1] ? {din[15:0], word1[15:0]} : {word1[31:16], din[15:0]} 
                         :addr[1] ? addr[0] ? {din[7:0], word1[23:0]} : {word1[31:24], din[7:0], word1[15:0]}
                             :addr[0] ? {word1[31:16], din[7:0], word1[7:0]} : {word1[31:8], din[7:0]};
-                inner_dirty[TO_BE_FILLED] <= TO_BE_FILLED;
-                inner_recent[TO_BE_FILLED] <= TO_BE_FILLED;
-                inner_recent[TO_BE_FILLED] <= TO_BE_FILLED;
+                inner_dirty[addr_element1] <= 1'b1; //[TO_BE_FILLED] <= TO_BE_FILLED;
+                inner_recent[addr_element1] <= 1'b1; //[TO_BE_FILLED] <= TO_BE_FILLED;
+                inner_recent[addr_element2] <= 1'b0; //[TO_BE_FILLED] <= TO_BE_FILLED;
             end
             else if (hit2) begin
                 inner_data[addr_word2] <= u_b_h_w[1] ? din
                     :u_b_h_w[0] ? addr[1] ? {din[15:0], word2[15:0]} : {word2[31:16], din[15:0]} 
                         :addr[1] ? addr[0] ? {din[7:0], word2[23:0]} : {word2[31:24], din[7:0], word2[15:0]}
                             :addr[0] ? {word2[31:16], din[7:0], word2[7:0]} : {word2[31:8], din[7:0]};
-                inner_dirty[TO_BE_FILLED] <= TO_BE_FILLED;
-                inner_recent[TO_BE_FILLED] <= TO_BE_FILLED;
-                inner_recent[TO_BE_FILLED] <= TO_BE_FILLED;
+                inner_dirty[addr_element2] <= 1'b1; //[TO_BE_FILLED] <= TO_BE_FILLED;
+                inner_recent[addr_element2] <= 1'b1; //[TO_BE_FILLED] <= TO_BE_FILLED;
+                inner_recent[addr_element1] <= 1'b0; //[TO_BE_FILLED] <= TO_BE_FILLED;
             end
         end
 
         if (replace) begin
-            if (hit2 | ((~hit1) & recent1)) begin
+            if (hit2 | ((~hit1) & recent1)) begin // replace 2
                 inner_data[addr_word2] <= din;
-                inner_valid[TO_BE_FILLED] <= TO_BE_FILLED;
-                inner_dirty[TO_BE_FILLED] <= TO_BE_FILLED;
-                inner_tag[TO_BE_FILLED] <= addr_tag;
-                inner_recent[TO_BE_FILLED] <= TO_BE_FILLED;
-                inner_recent[TO_BE_FILLED] <= TO_BE_FILLED;         
+                inner_valid[addr_element2] <= 1'b1; //[TO_BE_FILLED] <= TO_BE_FILLED;
+                inner_dirty[addr_element2] <= 1'b0; //[TO_BE_FILLED] <= TO_BE_FILLED;
+                inner_tag[addr_element2] <= addr_tag;//[TO_BE_FILLED] <= addr_tag;
+                inner_recent[addr_element2] <= 1'b1; //[TO_BE_FILLED] <= TO_BE_FILLED;
+                inner_recent[addr_element1] <= 1'b0; //[TO_BE_FILLED] <= TO_BE_FILLED;         
             end else begin
                 inner_data[addr_word1] <= din;
-                inner_valid[TO_BE_FILLED] <= TO_BE_FILLED;
-                inner_dirty[TO_BE_FILLED] <= TO_BE_FILLED;
-                inner_tag[TO_BE_FILLED] <= addr_tag;
-                inner_recent[TO_BE_FILLED] <= TO_BE_FILLED;
-                inner_recent[TO_BE_FILLED] <= TO_BE_FILLED; 
+                inner_valid[addr_element1] <= 1'b1; //[TO_BE_FILLED] <= TO_BE_FILLED;
+                inner_dirty[addr_element1] <= 1'b0; //[TO_BE_FILLED] <= TO_BE_FILLED;
+                inner_tag[addr_element1] <= addr_tag;//[TO_BE_FILLED] <= addr_tag;
+                inner_recent[addr_element1] <= 1'b1; //[TO_BE_FILLED] <= TO_BE_FILLED;
+                inner_recent[addr_element2] <= 1'b0; //[TO_BE_FILLED] <= TO_BE_FILLED;  
             end
         end
 

@@ -85,23 +85,23 @@ module cmu (
                 S_IDLE: begin
                     if (en_r || en_w) begin
                         if (cache_hit)
-                            next_state = TO_BE_FILLED;
+                            next_state = S_IDLE;//TO_BE_FILLED;
                         else if (cache_valid && cache_dirty)
-                            next_state = TO_BE_FILLED;
+                            next_state = S_BACK;//TO_BE_FILLED;
                         else
-                            next_state = TO_BE_FILLED;
+                            next_state = S_FILL;//TO_BE_FILLED;
                     end
                     else begin
-                        next_state = TO_BE_FILLED;
+                        next_state = S_IDLE;//TO_BE_FILLED;
                     end
                     next_word_count = 2'b00;
                 end
 
                 S_BACK: begin
                     if (mem_ack_i && word_count == {ELEMENT_WORDS_WIDTH{1'b1}})    // 2'b11 in default case
-                        next_state = TO_BE_FILLED;
+                        next_state = S_FILL;//TO_BE_FILLED;
                     else
-                        next_state = TO_BE_FILLED;
+                        next_state = S_BACK;//TO_BE_FILLED;
 
                     if (mem_ack_i)
                         next_word_count = word_count+1;
@@ -111,9 +111,9 @@ module cmu (
 
                 S_FILL: begin
                     if (mem_ack_i && word_count == {ELEMENT_WORDS_WIDTH{1'b1}})
-                        next_state = TO_BE_FILLED;
+                        next_state = S_WAIT;//TO_BE_FILLED;
                     else
-                        next_state = TO_BE_FILLED;
+                        next_state = S_FILL;//TO_BE_FILLED;
 
                     if (mem_ack_i)
                         next_word_count = word_count+1;
@@ -122,7 +122,7 @@ module cmu (
                 end
 
                 S_WAIT: begin
-                    next_state = TO_BE_FILLED;
+                    next_state = S_IDLE;//TO_BE_FILLED;
                     next_word_count = 2'b00;
                 end
 
@@ -146,7 +146,7 @@ module cmu (
                 cache_din = data_w;
             end
             S_BACK: begin
-                cache_addr = TO_BE_FILLED;
+               cache_addr = {addr_rw[ADDR_BITS-1:BLOCK_WIDTH], word_count, {ELEMENT_WORDS_WIDTH{1'b0}}};//TO_BE_FILLED;
                 cache_load = 1'b0;
                 cache_store = 1'b0;
                 cache_replace = 1'b0;
@@ -154,7 +154,7 @@ module cmu (
                 cache_din = 32'b0;
             end
             S_FILL: begin
-                cache_addr = TO_BE_FILLED;
+                cache_addr = {addr_rw[ADDR_BITS-1:BLOCK_WIDTH], word_count, {ELEMENT_WORDS_WIDTH{1'b0}}};//TO_BE_FILLED;
                 cache_load = 1'b0;
                 cache_store = 1'b0;
                 cache_replace = mem_ack_i;
@@ -205,6 +205,6 @@ module cmu (
 
 
     assign mem_data_o = cache_dout;
-    assign stall = TO_BE_FILLED;
+    assign stall = (next_state!=S_IDLE);//TO_BE_FILLED;
 
 endmodule
