@@ -47,12 +47,12 @@ module divider(
 
 endmodule
 
-module debug_clk(
-    input clk,
-    input debug_en,
-    input debug_step,
-    output debug_clk
-);
-    assign debug_clk = clk;
-endmodule
+// module debug_clk(
+//     input clk,
+//     input debug_en,
+//     input debug_step,
+//     output debug_clk
+// );
+//     assign debug_clk = clk;
+// endmodule
 

@@ -98,7 +98,7 @@ module cache (
         else if (load & hit2) begin
             dout <= u_b_h_w[1] ? word2 :
             u_b_h_w[0] ? {u_b_h_w[2] ? 16'b0 : {16{half_word2[15]}}, half_word2} :
-            {u_b_h_w[2] ? 24'b0 : {24{byte1[7]}}, byte2};
+            {u_b_h_w[2] ? 24'b0 : {24{byte2[7]}}, byte2};
         end
         else begin
             dout <= recent1 ? word2 : word1;

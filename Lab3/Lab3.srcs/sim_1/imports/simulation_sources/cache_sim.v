@@ -68,7 +68,7 @@ module cache_sim;
 				store <= 0;
 				replace <= 1;
 				invalid <= 0;
-				addr <= 32'h4;
+				addr <= 32'h4;//100
 				din <= 32'h12345678;
 				u_b_h_w <= 2;
 			end
@@ -78,7 +78,7 @@ module cache_sim;
 				store <= 0;
 				replace <= 1;
 				invalid <= 0;
-				addr <= 32'hc;
+				addr <= 32'hc;//1100
 				din <= 32'h23456789;
 				u_b_h_w <= 2;
 			end
@@ -88,7 +88,7 @@ module cache_sim;
 				store <= 0;
 				replace <= 1;
 				invalid <= 0;
-				addr <= 32'h10;
+				addr <= 32'h10;//10000
 				din <= 32'h34568890;
 				u_b_h_w <= 2;
 			end
@@ -98,7 +98,7 @@ module cache_sim;
 				store <= 0;
 				replace <= 1;
 				invalid <= 0;
-				addr <= 32'h14;
+				addr <= 32'h14;//10100
 				din <= 32'h45678901;
 				u_b_h_w <= 2;
 			end
@@ -108,7 +108,7 @@ module cache_sim;
 				store <= 0;
 				replace <= 0;
 				invalid <= 0;
-				addr <= 32'h20;
+				addr <= 32'h20;//100000
 				din <= 32'h0;
 				u_b_h_w <= 2;
 			end
@@ -118,7 +118,7 @@ module cache_sim;
 				store <= 0;
 				replace <= 0;
 				invalid <= 0;
-				addr <= 32'h10;
+				addr <= 32'h10;//10000
 				din <= 32'h0;
 				u_b_h_w <= 1;
 			end
@@ -128,7 +128,7 @@ module cache_sim;
 				store <= 1;
 				replace <= 0;
 				invalid <= 0;
-				addr <= 32'h24;
+				addr <= 32'h24;//100100
 				din <= 32'h56789012;
 				u_b_h_w <= 1;
 			end
@@ -138,7 +138,7 @@ module cache_sim;
 				store <= 1;
 				replace <= 0;
 				invalid <= 0;
-				addr <= 32'h11;
+				addr <= 32'h11;//10001
 				din <= 32'h67890123;
 				u_b_h_w <= 0;
 			end
@@ -148,7 +148,7 @@ module cache_sim;
 				store <= 0;
 				replace <= 1;
 				invalid <= 0;
-				addr <= 32'h200;
+				addr <= 32'h200;//100000000
 				din <= 32'h78901234;
 				u_b_h_w <= 2;
 			end
@@ -158,7 +158,7 @@ module cache_sim;
 				store <= 1;
 				replace <= 0;
 				invalid <= 0;
-				addr <= 32'h204;
+				addr <= 32'h204;//100000100
 				din <= 32'h89012345;
 				u_b_h_w <= 0;
 			end
@@ -168,7 +168,7 @@ module cache_sim;
 				store <= 0;
 				replace <= 0;
 				invalid <= 0;
-				addr <= 32'h400;
+				addr <= 32'h400;//1000000000
 				din <= 32'h0;
 				u_b_h_w <= 2;
 			end
@@ -178,7 +178,7 @@ module cache_sim;
 				store <= 0;
 				replace <= 0;
 				invalid <= 0;
-				addr <= 32'hd;
+				addr <= 32'hd;//1101
 				din <= 32'h0;
 				u_b_h_w <= 4;
 			end
@@ -188,7 +188,7 @@ module cache_sim;
 				store <= 0;
 				replace <= 1;
 				invalid <= 0;
-				addr <= 32'h60;
+				addr <= 32'h60;//110000
 				din <= 32'ha98ac7;
 				u_b_h_w <= 2;
 			end
@@ -198,7 +198,7 @@ module cache_sim;
 				store <= 0;
 				replace <= 1;
 				invalid <= 0;
-				addr <= 32'h160;
+				addr <= 32'h160;//10110000
 				din <= 32'h153158e;
 				u_b_h_w <= 2;
 			end
@@ -208,7 +208,7 @@ module cache_sim;
 				store <= 0;
 				replace <= 1;
 				invalid <= 0;
-				addr <= 32'h260;
+				addr <= 32'h260;//100110000
 				din <= 32'h1fca055;
 				u_b_h_w <= 2;
 			end
@@ -218,7 +218,7 @@ module cache_sim;
 				store <= 0;
 				replace <= 1;
 				invalid <= 0;
-				addr <= 32'h360;
+				addr <= 32'h360;//110110000
 				din <= 32'h2a62b1c;
 				u_b_h_w <= 2;
 			end
@@ -228,7 +228,7 @@ module cache_sim;
 				store <= 0;
 				replace <= 0;
 				invalid <= 0;
-				addr <= 32'h560;
+				addr <= 32'h560;//1010110000
 				din <= 32'h0;
 				u_b_h_w <= 2;
 			end
@@ -238,7 +238,7 @@ module cache_sim;
 				store <= 0;
 				replace <= 0;
 				invalid <= 0;
-				addr <= 32'h60;
+				addr <= 32'h60;//1100000
 				din <= 32'h0;
 				u_b_h_w <= 2;
 			end
@@ -248,11 +248,43 @@ module cache_sim;
 				store <= 0;
 				replace <= 0;
 				invalid <= 0;
-				addr <= 32'h560;
+				addr <= 32'h560;//1010110000
 				din <= 32'h0;
 				u_b_h_w <= 2;
 			end
 
+			32'd20: begin
+				load <= 0;
+				store <= 0;
+				replace <= 1;
+				invalid <= 0;
+				//00010000000000000000000011110000
+				addr <= 32'h100000f0;
+				din <= 32'h11111111;
+				u_b_h_w <= 1;
+			end
+
+			32'd21: begin
+				load <= 0;
+				store <= 0;
+				replace <= 1;
+				invalid <= 0;
+				//00100000000000000000000011110000
+				addr <= 32'h200000f0;
+				din <= 32'h22222222;
+				u_b_h_w <= 1;
+			end
+
+			32'd22: begin
+				load <= 0;
+				store <= 0;
+				replace <= 1;
+				invalid <= 0;
+				//00110000000000000000000011110000
+				addr <= 32'h300000f0;
+				din <= 32'h33333333;
+				u_b_h_w <= 1;
+			end
 
 			default: begin
 				$finish;

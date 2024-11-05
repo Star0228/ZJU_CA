@@ -1,0 +1,119 @@
+{
+  "config": {
+    "word_width": 32,
+    "words_per_cache_line": 4,
+    "num_cache_line": 64,
+    "associativity": 4,
+    "write_back": true,
+    "write_allocate": true
+  },
+  "simulation": [
+    {1
+      "type": "replace",
+      "addr": "00000000000000000000000000000100",data1
+      "data_in": "0x12345678",
+      "width": "w"
+    },
+    {2
+      "type": "replace",
+      "addr": "00000000000000000000000000001100",data3
+      "data_in": "0x23456789",
+      "width": "w"
+    },
+    {3
+      "type": "replace",
+      "addr": "00000000000000000000000000010000",dd   data16
+      "data_in": "0x34568890",
+      "width": "w"
+    },
+    {4
+      "type": "replace",
+      "addr": "00000000000000000000000000010100",  data17
+      "data_in": "0x45678901",
+      "width": "w"
+    },
+    {5
+      "type": "load",
+      "addr": "00000000000000000000000000100000",data32
+      "width": "w"
+    },
+    {6
+      "type": "load",
+      "addr": "00000000000000000000000000010000",data16
+      "width": "h"
+    },
+    {7
+      "type": "store",
+      "addr": "00000000000000000000000000100100",dd data33
+      "data_in": "0x56789012",
+      "width": "h"
+    },
+    {8
+      "type": "store",
+      "addr": "00000000000000000000000000010001",
+      "data_in": "0x67890123",
+      "width": "b"
+    },
+    {9
+      "type": "replace",
+      "addr": "00000000000000000000001000000000",
+      "data_in": "0x78901234",
+      "width": "w"
+    },
+    {10
+      "type": "store",
+      "addr": "00000000000000000000001000000100",
+      "data_in": "0x89abcdef",
+      "width": "b"
+    },
+    {11
+      "type": "no-op",
+      "addr": "00000000000000000000010000000000",
+      "width": "w"
+    },
+    {12
+      "type": "load",
+      "addr": "00000000000000000000000000001101",
+      "width": "bu"
+    },
+    {13
+      "type": "replace",
+      "addr": "00000000000000000000000001100000",
+      "data_in": "0x00a8c0ff",
+      "width": "w"
+    },
+    {14
+      "type": "replace",
+      "addr": "00000000000000000000000101100000",
+      "data_in": "0x0152e6de",
+      "width": "w"
+    },
+    {15
+      "type": "replace",
+      "addr": "00000000000000000000001001100000",
+      "data_in": "0x01fb4bcd",
+      "width": "w"
+    },
+    {16
+      "type": "replace",
+      "addr": "00000000000000000000001101100000",
+      "data_in": "0x02a4b0bc",
+      "width": "w"
+    },
+    {17
+      "type": "load",
+      "addr": "00000000000000000000010101100000",
+      "width": "w"
+    },
+    {18
+      "type": "load",
+      "addr": "00000000000000000000000001100000",
+      "width": "w"
+    },
+    {19
+      "type": "load",
+      "addr": "00000000000000000000010101100000",
+      "width": "w"
+    }
+  ]
+}
