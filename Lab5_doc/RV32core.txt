@@ -1,0 +1,31 @@
+//请按照下面的提示，像原先加入CPU_TEST一样，在RV32core.v加入下面的内容
+module  RV32core(
+        input debug_en,  // debug enable
+        input debug_step,  // debug step clock
+        input [6:0] debug_addr,  // debug address
+        output[31:0] debug_data,  // debug data
+        output[31:0] mem_addr,
+        output[31:0] mem_data,
+        input clk,  // main clock
+        input rst,  // synchronous reset
+        input interrupter,  // interrupt source, for future use
+        input vga_sw
+	);
+	//......
+    MUX2T1_32 mux_WB(.I0(ALUout_WB),.I1(Datain_WB),.s(DatatoReg_WB),.o(wt_data_WB));
+	
+	//在这一行之后，加上下面的内容
+	//Append the following lines after this row in the origin RV32core.v
+
+
+	wire [15:0] debug_reg_data = register.register[1] + register.register[2] + register.register[3] + register.register[4]
+                      + register.register[5] + register.register[6] + register.register[7] + register.register[8]
+                      + register.register[9] + register.register[10] + register.register[11] + register.register[12]
+                      + register.register[13] + register.register[14] + register.register[15] + register.register[16]
+                      + register.register[17] + register.register[18] + register.register[19] + register.register[20]
+                      + register.register[21] + register.register[22] + register.register[23] + register.register[24]
+                      + register.register[25] + register.register[26] + register.register[27] + register.register[28]
+                      + register.register[29] + register.register[30] + register.register[31];
+    wire [15:0] debug_addr_data = PC_IF;
+    assign debug_data = {debug_addr_data, debug_reg_data};
+endmodule
