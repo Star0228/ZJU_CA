@@ -162,6 +162,7 @@ module CtrlUnit(
     wire use_JUMP = B_valid | JAL | JALR;
 
     // normal stall: structural hazard or WAW
+    // assign normal_stall = (use_FU != `FU_BLANK && (FUS[use_FU][`BUSY] & ~FUS[use_FU][`FU_DONE]) ) | (|(dst & RRS[dst]));
     assign normal_stall = (use_ALU & (FUS[`FU_ALU][`BUSY] ) )  |//& ~FUS[`FU_ALU][`FU_DONE]
                           (use_MEM & (FUS[`FU_MEM][`BUSY] )) |//& ~FUS[`FU_MEM][`FU_DONE]
                           (use_MUL & (FUS[`FU_MUL][`BUSY] )) |//& ~FUS[`FU_MUL][`FU_DONE]
@@ -281,6 +282,8 @@ module CtrlUnit(
     // WAR = 1  WAR exists
     // WAR = 0  WAR not exists
     // WAR的检测，这里的代码有点长
+
+
     wire ALU_WAR = ~(
         (FUS[`FU_MEM][`SRC1_H:`SRC1_L] == FUS[`FU_ALU][`DST_H:`DST_L] && FUS[`FU_MEM][`RDY1])  ||
         (FUS[`FU_MEM][`SRC2_H:`SRC2_L] == FUS[`FU_ALU][`DST_H:`DST_L] && FUS[`FU_MEM][`RDY2])  ||
@@ -407,6 +410,12 @@ module CtrlUnit(
             // 对于WAR的处理逻辑
             // WB
             if (FUS[`FU_JUMP][`FU_DONE] & JUMP_WAR) begin
+                // FUS[`FU_JUMP] <= use_FU == `FU_JUMP? FUS[`FU_JUMP]:32'b0;//TO_BE_FILLED;
+                // FUS[`FU_JUMP][`FU_DONE] <= 1'b0;
+                // if (use_FU != `FU_JUMP) begin
+                //     FUS[`FU_JUMP] <= 32'b0;
+                // end
+                // FUS[`FU_JUMP][`FU_DONE] <= 0;
                 FUS[`FU_JUMP] <= 32'b0;
                 RRS[FUS[`FU_JUMP][`DST_H:`DST_L]] <= 3'b0;//[TO_BE_FILLED] <= TO_BE_FILLED;
 
@@ -426,6 +435,12 @@ module CtrlUnit(
             else if (FUS[`FU_ALU][`FU_DONE] & ALU_WAR) begin
                 // 这里需要填入多行 Multiple rows need to be filled in here
                 //TO_BE_FILLED <= 0;
+                // FUS[`FU_ALU] <= use_FU == `FU_ALU? FUS[`FU_ALU]:32'b0;
+                // FUS[`FU_ALU][`FU_DONE] <= 1'b0;
+                // if (use_FU != `FU_ALU || RO_en != 1'b1) begin
+                //     FUS[`FU_ALU] <= 0;   
+                // end
+                // FUS[`FU_ALU][`FU_DONE] <= 0;
                 FUS[`FU_ALU] <= 32'b0;
                 RRS[FUS[`FU_ALU][`DST_H:`DST_L]] <= 3'b0;
                 
@@ -443,6 +458,12 @@ module CtrlUnit(
             else if (FUS[`FU_MEM][`FU_DONE] & MEM_WAR) begin
                 // 这里需要填入多行 Multiple rows need to be filled in here
                 //TO_BE_FILLED <= 0;
+                // FUS[`FU_MEM] <= (use_FU == `FU_MEM )?FUS[`FU_MEM]:32'b0 ;
+                // FUS[`FU_MEM][`FU_DONE] <= 1'b0;
+                // if (use_FU != `FU_MEM) begin
+                //     FUS[`FU_MEM] <= 0;
+                // end
+                // FUS[`FU_MEM][`FU_DONE] <= 0;
                 FUS[`FU_MEM] <= 32'b0;
                 RRS[FUS[`FU_MEM][`DST_H:`DST_L]] <= 3'b0;
 
@@ -460,9 +481,16 @@ module CtrlUnit(
             else if (FUS[`FU_MUL][`FU_DONE] & MUL_WAR) begin
                 // 这里需要填入多行 Multiple rows need to be filled in here
                 //TO_BE_FILLED <= 0;
+                // FUS[`FU_MUL] <= use_FU == `FU_MUL? FUS[`FU_MUL]:32'b0;
+                // FUS[`FU_MUL][`FU_DONE] <= 1'b0;
+                // if (use_FU != `FU_MUL) begin
+                //     FUS[`FU_MUL] <= 0;        
+                // end
+                // FUS[`FU_MUL][`FU_DONE] <= 0;
                 FUS[`FU_MUL] <= 32'b0;
                 RRS[FUS[`FU_MUL][`DST_H:`DST_L]] <= 3'b0;
 
+                // ensure RAW
                 if (FUS[`FU_JUMP][`FU1_H:`FU1_L] == `FU_MUL) FUS[`FU_JUMP][`RDY1]<=1'b1;
                 if (FUS[`FU_ALU][`FU1_H:`FU1_L] == `FU_MUL) FUS[`FU_ALU][`RDY1]<=1'b1;
                 if (FUS[`FU_MEM][`FU1_H:`FU1_L] == `FU_MUL) FUS[`FU_MEM][`RDY1]<=1'b1;
@@ -477,6 +505,12 @@ module CtrlUnit(
             else if (FUS[`FU_DIV][`FU_DONE] & DIV_WAR) begin
                 // 这里需要填入多行 Multiple rows need to be filled in here
                 //TO_BE_FILLED <= 0;
+                // FUS[`FU_DIV] <= use_FU == `FU_DIV? FUS[`FU_DIV]:32'b0;
+                // FUS[`FU_DIV][`FU_DONE] <= 1'b1;
+                // if (use_FU != `FU_DIV) begin
+                //     FUS[`FU_DIV] <= 0;
+                // end
+                // FUS[`FU_DIV][`FU_DONE] <= 0;
                 FUS[`FU_DIV] <= 32'b0;
                 RRS[FUS[`FU_DIV][`DST_H:`DST_L]] <= 3'b0;
 
