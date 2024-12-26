@@ -162,11 +162,11 @@ module CtrlUnit(
     wire use_JUMP = B_valid | JAL | JALR;
 
     // normal stall: structural hazard or WAW
-    assign normal_stall = (use_ALU & (FUS[`FU_ALU][`BUSY] ) )  |//& ~FUS[`FU_ALU][`FU_DONE]
-                          (use_MEM & (FUS[`FU_MEM][`BUSY] )) |//& ~FUS[`FU_MEM][`FU_DONE]
-                          (use_MUL & (FUS[`FU_MUL][`BUSY] )) |//& ~FUS[`FU_MUL][`FU_DONE]
-                          (use_DIV & (FUS[`FU_DIV][`BUSY] )) |//& ~FUS[`FU_DIV][`FU_DONE]
-                          (use_JUMP& (FUS[`FU_JUMP][`BUSY]) )|//& ~FUS[`FU_JUMP][`FU_DONE]
+    assign normal_stall = (use_ALU & (FUS[`FU_ALU][`BUSY] ) )  |
+                          (use_MEM & (FUS[`FU_MEM][`BUSY] )) |
+                          (use_MUL & (FUS[`FU_MUL][`BUSY] )) |
+                          (use_DIV & (FUS[`FU_DIV][`BUSY] )) |
+                          (use_JUMP& (FUS[`FU_JUMP][`BUSY]) )|
                           (|(dst & RRS[dst]));
                         // (use_ALU & FUS[`FU_ALU][TO_BE_FILLED]) |
                         //   (use_MEM & FUS[`FU_MEM][TO_BE_FILLED]) |
@@ -177,9 +177,8 @@ module CtrlUnit(
                
 
     // 1 Enable（或0 Stall） IS 和 RO.
-    assign IS_en = IS_flush | (~normal_stall & ~ctrl_stall);// || (JUMP_done && is_jump == 0 && use_FU != `FU_JUMP);//TO_BE_FILLED;
-    assign RO_en = (~IS_flush & ~normal_stall & ~ctrl_stall);
-    // assign RO_en = ((~IS_flush & ~normal_stall & ~ctrl_stall)) | (use_FU != `FU_JUMP && FUS[use_FU][`FU_DONE]);// || (JUMP_done && is_jump == 0 && use_FU != `FU_JUMP);//TO_BE_FILLED;
+    assign IS_en = IS_flush | (~normal_stall & ~ctrl_stall);//TO_BE_FILLED;
+    assign RO_en = (~IS_flush & ~normal_stall & ~ctrl_stall);//TO_BE_FILLED;
 
     always @ (posedge clk or posedge rst) begin
         if (rst) begin
@@ -360,11 +359,11 @@ module CtrlUnit(
                 FUS[use_FU][`SRC2_H:`SRC2_L] <= src2; //TO_BE_FILLED;
                 FUS[use_FU][`DST_H:`DST_L] <= dst; //TO_BE_FILLED;
                 FUS[use_FU][`OP_H:`OP_L] <= op; //TO_BE_FILLED;
-                FUS[use_FU][`FU1_H:`FU1_L] <= fu1;//FUS[fu1][`FU_DONE] ? 3'b0 : fu1;//TO_BE_FILLED;
-                FUS[use_FU][`FU2_H:`FU2_L] <= fu2;//FUS[fu2][`FU_DONE] ? 3'b0 : fu2;//TO_BE_FILLED;
+                FUS[use_FU][`FU1_H:`FU1_L] <= fu1;//TO_BE_FILLED;
+                FUS[use_FU][`FU2_H:`FU2_L] <= fu2;//TO_BE_FILLED;
                 FUS[use_FU][`FU_DONE] <= 1'b0;//new
-                FUS[use_FU][`RDY1] <= rdy1;//FUS[fu1][`FU_DONE] ? 1'b1 : rdy1; //TO_BE_FILLED;
-                FUS[use_FU][`RDY2] <= rdy2;//FUS[fu2][`FU_DONE] ? 1'b1 : rdy2; //TO_BE_FILLED;
+                FUS[use_FU][`RDY1] <= rdy1;//TO_BE_FILLED;
+                FUS[use_FU][`RDY2] <= rdy2;//TO_BE_FILLED;
                
                 IMM[use_FU] <= imm;
                 PCR[use_FU] <= PC;
@@ -609,12 +608,12 @@ module CtrlUnit(
             reg_write = 1'b1;//TO_BE_FILLED;
             rd_ctrl = FUS[`FU_MEM][`DST_H:`DST_L];//TO_BE_FILLED;
         end
-        else if (FUS[`FU_MUL][`FU_DONE] & ~MUL_WAR) begin//(TO_BE_FILLED) begin
+        else if (FUS[`FU_MUL][`FU_DONE] & MUL_WAR) begin//(TO_BE_FILLED) begin
             write_sel = `FU_MUL-1;//TO_BE_FILLED;
             reg_write = 1'b1;//TO_BE_FILLED;
             rd_ctrl = FUS[`FU_MUL][`DST_H:`DST_L];//TO_BE_FILLED;
         end
-        else if (FUS[`FU_DIV][`FU_DONE] & ~DIV_WAR) begin//(TO_BE_FILLED) begin
+        else if (FUS[`FU_DIV][`FU_DONE] & DIV_WAR) begin//(TO_BE_FILLED) begin
             write_sel = `FU_DIV-1;//TO_BE_FILLED;
             reg_write = 1'b1;//TO_BE_FILLED;
             rd_ctrl = FUS[`FU_DIV][`DST_H:`DST_L];//TO_BE_FILLED;
